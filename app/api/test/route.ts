@@ -1,11 +1,10 @@
-import { NextResponse } from 'next/server';
-
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  return NextResponse.json({
-    status: 'API is working',
+  return new Response(JSON.stringify({
+    status: 'OK',
     timestamp: new Date().toISOString(),
+    message: 'API is working',
     env: {
       POSTGRES_HOST: process.env.POSTGRES_HOST || 'NOT_SET',
       POSTGRES_PORT: process.env.POSTGRES_PORT || 'NOT_SET',
@@ -15,5 +14,10 @@ export async function GET() {
       JWT_SECRET: process.env.JWT_SECRET ? 'SET' : 'NOT_SET',
       NODE_ENV: process.env.NODE_ENV || 'NOT_SET',
     }
+  }), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
 }
