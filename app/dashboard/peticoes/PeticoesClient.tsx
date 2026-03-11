@@ -44,9 +44,13 @@ export default function PeticoesClient({ initialTemplates, clients, processes, i
         if (!selectedTemplate || !selectedClient) return;
 
         setIsGenerating(true);
-        const result = await generatePetition(selectedTemplate.id, selectedClient, selectedProcess);
+        const result = await generatePetition({ 
+            templateId: selectedTemplate.id, 
+            clientId: selectedClient, 
+            processId: selectedProcess 
+        });
 
-        if (result.success) {
+        if (result.success && result.content) {
             // Converter quebras de linha simples em <p> para o editor
             const htmlContent = result.content
                 .split('\n\n')

@@ -64,7 +64,7 @@ export default function DocumentosClient({ initialDocuments }: DocumentosClientP
         if (!confirm("Tem certeza que deseja excluir este documento? Esta ação não pode ser desfeita.")) return;
 
         setIsActionLoading(id);
-        const result = await deleteDocument(id, storagePath);
+        const result = await deleteDocument(id);
 
         if (result.success) {
             setDocuments(prev => prev.filter(d => d.id !== id));

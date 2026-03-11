@@ -80,7 +80,7 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
                 contentEditable
                 onInput={(e) => onChange(e.currentTarget.innerHTML)}
                 className="flex-1 p-8 outline-none font-serif text-slate-800 leading-relaxed min-h-[500px] overflow-y-auto"
-                placeholder="Comece a editar sua petição aqui..."
+                data-placeholder="Comece a editar sua petição aqui..."
             />
 
             <div className="p-2 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
