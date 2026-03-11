@@ -294,3 +294,141 @@ export async function markNotificationAsRead(id: string) {
         return { success: false, error: error.message };
     }
 }
+
+// --- AGENDA/APPOINTMENTS ---
+
+export async function getAppointments() {
+    try {
+        const result = await query(`
+            SELECT * FROM appointments
+            ORDER BY start_time ASC
+        `);
+        return result.rows;
+    } catch (error) {
+        console.error('Error in getAppointments:', error);
+        return [];
+    }
+}
+
+// --- FINANCEIRO ---
+
+export async function getInvoices() {
+    try {
+        const result = await query(`
+            SELECT * FROM financial_transactions
+            ORDER BY transaction_date DESC
+        `);
+        return result.rows;
+    } catch (error) {
+        console.error('Error in getInvoices:', error);
+        return [];
+    }
+}
+
+export async function createInvoice(data: any) {
+    try {
+        await query(`
+            INSERT INTO financial_transactions (description, amount, type, category, transaction_date)
+            VALUES ($1, $2, $3, $4, $5)
+        `, [data.description, data.amount, data.type, data.category, data.transaction_date]);
+        
+        revalidatePath('/dashboard/financeiro');
+        return { success: true };
+    } catch (error: any) {
+        console.error('Error creating invoice:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+// --- PETIÇÕES ---
+
+export async function getPetitionTemplates() {
+    try {
+        // Retorna array vazio por enquanto - implementar depois
+        return [];
+    } catch (error) {
+        console.error('Error in getPetitionTemplates:', error);
+        return [];
+    }
+}
+
+export async function generatePetition(data: any) {
+    try {
+        // Implementação futura
+        return { success: true, content: '' };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+export async function savePetition(data: any) {
+    try {
+        // Implementação futura
+        return { success: true };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+// --- DOCUMENTOS ---
+
+export async function uploadFile(data: any) {
+    try {
+        await query(`
+            INSERT INTO documents (name, file_path, file_size, mime_type, category, process_id)
+            VALUES ($1, $2, $3, $4, $5, $6)
+        `, [data.name, data.file_path, data.file_size, data.mime_type, data.category, data.process_id]);
+        
+        revalidatePath('/dashboard/documentos');
+        return { success: true };
+    } catch (error: any) {
+        console.error('Error uploading file:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+export async function deleteDocument(id: string) {
+    try {
+        await query('DELETE FROM documents WHERE id = $1', [id]);
+        revalidatePath('/dashboard/documentos');
+        return { success: true };
+    } catch (error: any) {
+        console.error('Error deleting document:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+export async function renameDocument(id: string, newName: string) {
+    try {
+        await query('UPDATE documents SET name = $1 WHERE id = $2', [newName, id]);
+        revalidatePath('/dashboard/documentos');
+        return { success: true };
+    } catch (error: any) {
+        console.error('Error renaming document:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+// --- PERFIL/SETTINGS ---
+
+export async function updateProfile(data: any) {
+    try {
+        // Implementação futura - atualizar perfil do usuário
+        return { success: true };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+// --- WHATSAPP ---
+
+export async function getWhatsAppLink(phone: string, message?: string) {
+    try {
+        const cleanPhone = phone.replace(/\D/g, '');
+        const encodedMessage = message ? encodeURIComponent(message) : '';
+        return `https://wa.me/${cleanPhone}${encodedMessage ? `?text=${encodedMessage}` : ''}`;
+    } catch (error) {
+        console.error('Error generating WhatsApp link:', error);
+        return '';
+    }
+}
